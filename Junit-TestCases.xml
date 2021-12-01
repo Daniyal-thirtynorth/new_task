@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites>
+<testsuite name="Test Cases" errors="0" tests="6" failures="0" time="0.25" timestamp="2021-11-18T23:23:14">
+  <testcase classname="Test Cases" name="register" time="0.163"></testcase>
+  <testcase classname="Test Cases" name="login" time="0.041"></testcase>
+  <testcase classname="Test Cases" name="should return 0 articles" time="0.01"></testcase>
+  <testcase classname="Test Cases" name="should add two articles with successive article ids, and return the article each time" time="0.011"></testcase>
+  <testcase classname="Test Cases" name="should return an article with a specified id" time="0.011"></testcase>
+  <testcase classname="Test Cases" name="should return nothing for an invalid id" time="0.011"></testcase>
+</testsuite>
+</testsuites>
