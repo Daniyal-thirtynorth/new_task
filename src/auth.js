@@ -4,178 +4,185 @@ var Profile = require('../model.js').Profile
 var cookieParser = require('cookie-parser')
 var redis = require('redis');
 const client = redis.createClient({
-    host: 'redis-18930.c284.us-east1-2.gce.cloud.redislabs.com',
-    port: 18930,
-    password: 'XFuRXsnB0c1wH7RkYIwtPKVN3IBp4gq5'
+	host: 'redis-18930.c284.us-east1-2.gce.cloud.redislabs.com',
+	port: 18930,
+	password: 'XFuRXsnB0c1wH7RkYIwtPKVN3IBp4gq5'
 });
 client.on("error", function (err) {
-    console.log("Error " + err);
+	console.log("Error " + err);
 });
 const saltLength = 20;
 const cookieKey = 'sid';
 
-const randomSalt = (len) =>{
+const randomSalt = (len) => {
 	const charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var randomString = '';
-    for (var i = 0; i < len; i++) {
-    	randomString += charSet.charAt(Math.floor(Math.random() * charSet.length));
-    }
-    return randomString;
+	var randomString = '';
+	for (var i = 0; i < len; i++) {
+		randomString += charSet.charAt(Math.floor(Math.random() * charSet.length));
+	}
+	return randomString;
 }
 
-const saltedHash = (password, salt) =>{
-	return md5(password+salt);
+const saltedHash = (password, salt) => {
+	return md5(password + salt);
 }
 
-const findByUsernameInUser = (username, callback)=> {
-	User.find({ username }).exec(function(err, items) {
+const findByUsernameInUser = (username, callback) => {
+	User.find({ username }).exec(function (err, items) {
 		callback(items);
 	})
 }
 
-const findByUsernameInProfile = (username, callback)=> {
-	Profile.find({ username }).exec(function(err,items){
+const findByUsernameInProfile = (username, callback) => {
+	Profile.find({ username }).exec(function (err, items) {
 		callback(items);
 	})
 }
 
-function isLoggedIn(req, res, next){
-	
-	let first_login=(req.url=='/login')||(req.url=='/register')
-	 if(req.method == 'OPTIONS'){
-	 	res.sendStatus(200)
-		 console.log(req.url)
-	 	return
-	 }
-	else if(!req.cookies&&(!first_login)){
+function isLoggedIn(req, res, next) {
+
+	let first_login = (req.url == '/login') || (req.url == '/register')
+	if (req.method == 'OPTIONS') {
+		res.sendStatus(200)
+		console.log(req.url)
+		return
+	}
+	else if (!req.cookies && (!first_login)) {
 		console.log('cookie missing')
 		res.status(401).send('Not authorized! No  cookie!')
 		return
 	}
-	else{
+	else {
 		console.log(req.url)
 		console.log(req.cookies)
-    let sid = req.cookies[cookieKey]
+		let sid = req.cookies[cookieKey]
 
-	if(first_login){
-		req.username=req.body.username
-		console.log('login!')
+		if (first_login) {
+			req.username = req.body.username
+			console.log('login!')
+		}
+		console.log('sid: ' + sid)
+		client.hgetall(sid, function (err, userObject) {
+			if (userObject && userObject.username) {
+				req.username = userObject.username;
+				console.log('username sid:' + req.username)
+				next();
+			}
+			else {
+				next()
+			}
+		})
 	}
-	console.log('sid: '+sid)
-	client.hgetall(sid, function(err,userObject){
-		if(userObject && userObject.username){
-			req.username = userObject.username;
-			console.log('username sid:'+req.username)
-			next();
-		}
-		else{
-			next()
-		}
-	})}
 }
 
 
-const loginAction = (req,res)=>{
+const loginAction = (req, res) => {
 	const username = req.body.username;
 	const password = req.body.password;
 	console.log('login  fired')
 	console.log(req.body)
-	if(!username || !password){
-		res.status(400).send({result:"Invalid input!"});
+	if (!username || !password) {
+		res.status(400).send({ result: "Invalid input!" });
 		return;
 	}
-	findByUsernameInUser(username, (items)=>{
-		if(items.length===0){
-			res.status(401).send({result:"No such user exist!"})
+	findByUsernameInUser(username, (items) => {
+		if (items.length === 0) {
+			res.status(401).send({ result: "No such user exist!" })
 			return;
 		}
-		else{
+		else {
 			//validating credentials
-			const salt = items[0].salt; 
+			const salt = items[0].salt;
 			const hash = items[0].hash;
-			if(saltedHash(password, salt)!=hash){
-				res.status(401).send({result:"Wrong password!"})
+			if (saltedHash(password, salt) != hash) {
+				res.status(401).send({ result: "Wrong password!" })
 				return;
 			}
-			else{console.log(hash)
-				let sessionKey = saltedHash(hash,salt)
-				client.hmset(sessionKey,{username})
+			else {
+				console.log(hash)
+				let sessionKey = saltedHash(hash, salt)
+				client.hmset(sessionKey, { username })
 				//console.log(username)
-				res.cookie(cookieKey, sessionKey, {maxAge:3600*1000, httpOnly:true})
-				res.status(200).send({username:username, result:'success'});
+				res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true })
+				res.status(200).send({ username: username, result: 'success' });
 				return;
 			}
 		}
 	})
 }
 
-const logoutAction = (req, res)=>{
+const logoutAction = (req, res) => {
 	client.del(req.cookies[cookieKey])
 	res.status(200).send('Logout Succeed!')
 }
 
-const registerAction = (req, res)=>{
+const registerAction = (req, res) => {
+	console.log("register hit")
 	const username = req.body.username;
 	const password = req.body.password;
 	const email = req.body.email;
 	const dob = req.body.dob;
 	const zipcode = req.body.zipcode;
 	console.log(req.body);
-	if(!username || !password || !email || !dob || !zipcode){
-		res.status(400).send({result:"Invalid input!"});
+	if (!username || !password || !email || !dob || !zipcode) {
+		res.status(400).send({ result: "Invalid input!" });
 		return;
 	}
-	findByUsernameInUser(username, function(items){
-		if(items.length !== 0){ 
-			res.status(400).send({result:"User already exist!"})
+	findByUsernameInUser(username, function (items) {
+		if (items.length !== 0) {
+			res.status(400).send({ result: "User already exist!" })
 			return;
 		}
-		else{
+		else {
 			const mySalt = randomSalt(saltLength)
-			new User({username:username, salt:mySalt, hash: saltedHash(password,mySalt)}).save(()=>{
-				new Profile({username:username, email: email, zipcode: zipcode, dob: dob, headline:"New User!",
-							avatar:'https://i.ytimg.com/vi/haoytTpv2NU/maxresdefault.jpg',
-							following: []}).save(()=>{
-					res.status(200).send({result:"Succeed!"})
+			new User({ username: username, salt: mySalt, hash: saltedHash(password, mySalt) }).save(() => {
+				new Profile({
+					username: username, email: email, zipcode: zipcode, dob: dob, headline: "New User!",
+					avatar: 'https://i.ytimg.com/vi/haoytTpv2NU/maxresdefault.jpg',
+					following: []
+				}).save(() => {
+					res.status(200).send({ result: "Succeed!" })
 					return;
-				});		
+				});
 			});
 		}
 	});
 }
 
-const putPassword = (req, res)=>{
+const putPassword = (req, res) => {
 	const password = req.body.password;
 	const username = req.username;
-	if(!password){
-		res.status(400).send({result:"Invalid input!"});
+	if (!password) {
+		res.status(400).send({ result: "Invalid input!" });
 	}
 	const newSalt = randomSalt(saltLength)
-	User.findOneAndUpdate({username}, {salt:newSalt, hash: saltedHash(password, newSalt)},{new:true}, (error,doc)=>{
-		if(error){
-			res.status(400).send({error:error})
+	User.findOneAndUpdate({ username }, { salt: newSalt, hash: saltedHash(password, newSalt) }, { new: true }, (error, doc) => {
+		if (error) {
+			res.status(400).send({ error: error })
 		}
-		else{
-			if(doc){
+		else {
+			if (doc) {
 				client.del(req.cookies[cookieKey])
-				let newCookie = saltedHash(doc.hash,doc.salt)
-				client.hmset(newCookie,{username})
-				res.cookie(cookieKey, newCookie, {maxAge:3600*1000, httpOnly:true})
-				res.status(200).send({username, status: 'Password changed!'})
+				let newCookie = saltedHash(doc.hash, doc.salt)
+				client.hmset(newCookie, { username })
+				res.cookie(cookieKey, newCookie, { maxAge: 3600 * 1000, httpOnly: true })
+				res.status(200).send({ username, status: 'Password changed!' })
 			}
-			else{
-				res.status(404).send({result:'No matched items!'})
+			else {
+				res.status(404).send({ result: 'No matched items!' })
 			}
 		}
 	})
 }
 
-
+const test = (req, res, next) => {
+	return res.status(200).json({ msg: "working" })
+}
 module.exports = app => {
-	app.use(cookieParser())	
-    app.post('/login', loginAction)
-    app.post('/register', registerAction)
-    app.use(isLoggedIn)
-    app.put('/logout', logoutAction)
-    app.put('/password',putPassword)
+	app.use(cookieParser())
+	app.post('/login', loginAction)
+	app.post('/register', registerAction)
+	app.use(isLoggedIn)
+	app.put('/logout', logoutAction)
+	app.put('/password', putPassword)
 }
