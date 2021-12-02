@@ -49,7 +49,7 @@ const getArticle = async (req, res) => {
     //     res.send({ articles: articles });
     // }
     try {
-        const id = req.params.id
+        const id = req.username
         let filter = {}
         if (id) {
             filter = { id }
@@ -108,10 +108,11 @@ const putArticle = async (req, res) => {
     // }
     try {
         const id = req.params.id
-        const { text, title } = req.body
+        const { text, title, img } = req.body
         const updated = await articleModel.findOneAndUpdate({ id: id }, {
             text: text,
-            title
+            title,
+            img
         }, {
             new: true
         })
