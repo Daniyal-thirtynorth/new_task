@@ -41,7 +41,7 @@ const findByUsernameInProfile = (username, callback) => {
 
 function isLoggedIn(req, res, next) {
 
-	let first_login = (req.url == '/login') || (req.url == '/register')
+	let first_login = (req.url == '/login') || (req.url == '/register') || (req.url == '/googleLogin')
 	if (req.method == 'OPTIONS') {
 		res.sendStatus(200)
 		console.log(req.url)
@@ -194,8 +194,36 @@ const putPassword = (req, res) => {
 }
 const googleLogin = async (req, res, next) => {
 	try {
-		const { username, googleid, email } = req.body
-		let newUsername = username + "-" + googleid
+		const { username, googleId, email, avatar } = req.body
+		let newUsername = username + "-" + googleId
+		const isAlreadyExist = await User.findOne({
+			username: newUsername
+		})
+		const hash = saltedHash(googleId, mySalt)
+		const mySalt = randomSalt(saltLength)
+		if (!isAlreadyExist) {
+
+			// new User({ username: username, displayName, salt: mySalt, hash: saltedHash(password, mySalt) }).save(async () => {
+
+			const createdUser = new User({
+				username,
+				googleId,
+				displayName: username,
+				salt: mySalt,
+				hash,
+			})
+			const createdProfile = new Profile({
+				email,
+				avatar
+			})
+			await createdUser.save()
+			await createdProfile.save()
+
+		}
+		let sessionKey = saltedHash(hash, salt)
+		client.hmset(sessionKey, { username })
+		res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true })
+		return res.status(200).json({ result: "Succeed!" })
 	} catch (err) {
 
 	}
@@ -251,6 +279,7 @@ module.exports = app => {
 	app.use(cookieParser())
 	app.post('/login', loginAction)
 	app.post('/register', registerAction)
+	app.post("/googleLogin", googleLogin)
 	app.use(isLoggedIn)
 	app.put('/logout', logoutAction)
 	app.put('/password', putPassword)

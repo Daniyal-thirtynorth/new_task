@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
 require('./db.js')
 
 var userSchema = new mongoose.Schema({
-	username: String, salt: String, hash: String, displayName: String,
+	username: String, salt: String, hash: String, displayName: String, googleId: String
 })
 
 var user = mongoose.model('user', userSchema)
