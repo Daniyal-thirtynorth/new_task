@@ -107,8 +107,10 @@ const putArticle = async (req, res) => {
         const { text } = req.body
         const updated = await articleModel.findOneAndUpdate({ id: id }, {
             text: text
+        }, {
+            new: true
         })
-        return res.status(200).json({ updated })
+        return res.status(200).json({ articles })
     } catch (err) {
         return res.status(400).json({
             result: err.message
