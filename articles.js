@@ -50,11 +50,7 @@ const getArticle = async (req, res) => {
     // }
     try {
         const id = req.username
-        let filter = {}
-        if (id) {
-            filter = { id }
-        }
-        const articles = await articleModel.find(filter)
+        const articles = await articleModel.find({ author: id })
         return res.status(200).json({ articles })
     } catch (err) {
         return res.status(400).json({
