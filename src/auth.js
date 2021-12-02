@@ -196,9 +196,9 @@ const googleLogin = async (req, res, next) => {
 	try {
 		const { username, googleId, email, avatar } = req.body
 
-		let newUsername = username + "-" + googleId
+		let newUserName = username + "-" + googleId
 		const isAlreadyExist = await User.findOne({
-			username: newUsername
+			username: newUserName
 		})
 		const mySalt = randomSalt(saltLength)
 		const hash = saltedHash(googleId, mySalt)
@@ -208,7 +208,7 @@ const googleLogin = async (req, res, next) => {
 			// new User({ username: username, displayName, salt: mySalt, hash: saltedHash(password, mySalt) }).save(async () => {
 
 			const createdUser = new User({
-				username,
+				username: newUserName,
 				googleId,
 				displayName: username,
 				salt: mySalt,
@@ -216,7 +216,9 @@ const googleLogin = async (req, res, next) => {
 			})
 			const createdProfile = new Profile({
 				email,
-				avatar
+				username: newUserName,
+				avatar,
+				displayName: username
 			})
 			await createdUser.save()
 			await createdProfile.save()
