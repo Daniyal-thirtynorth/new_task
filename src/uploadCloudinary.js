@@ -22,31 +22,20 @@ const doUpload = (publicName, req, res, next) => {
 	// }, { public_id: req.body[publicName] })
 
 
-	// const uploadStream = cloudinary.uploader.upload_stream(result => {
-	// 	console.log("📝📝result was📝📝", result)
-	// 	req.fileurl = result.url
-	// 	req.fileid = result.public_id
-	// 	console.log(result.url)
-	// 	next()
-	// }, { public_id: "olympic_flag" })
-	console.log("📝📝req was📝📝", req.file)
-	cloudinary.v2.uploader.upload("https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg",
-		{ public_id: "olympic_flag" },
-		function (error, result) {
-			req.fileurl = result.url
-			req.fileid = result.public_id
-			console.log(result.url)
-			console.log(result);
-			next()
-		}
-	);
-	// console.log(publicName)
-	// console.log(req.headers)
-	// const s = new stream.PassThrough()
-	// console.log("🎈🎈🎈🎈🎈🎈🎈🎈", req.file)
-	// s.end(req.file.buffer)
-	// s.pipe(uploadStream)
-	// s.on('end', uploadStream.end)
+	const uploadStream = cloudinary.uploader.upload_stream(result => {
+		console.log("📝📝result was📝📝", result)
+		req.fileurl = result.url
+		req.fileid = result.public_id
+		console.log(result.url)
+		next()
+	}, { public_id: req.body[publicName] })
+
+	console.log(publicName)
+	console.log(req.headers)
+	const s = new stream.PassThrough()
+	s.end(req.file.buffer)
+	s.pipe(uploadStream)
+	s.on('end', uploadStream.end)
 	console.log('upload over')
 }
 
