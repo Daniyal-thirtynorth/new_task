@@ -49,7 +49,7 @@ function isLoggedIn(req, res, next) {
 	}
 	else if (!req.cookies && (!first_login)) {
 		console.log('cookie missing')
-		res.status(401).send('Not authorized! No  cookie!')
+		res.status(401).send({ result: 'Not authorized! No  cookie!' })
 		return
 	}
 	else {
