@@ -14,13 +14,19 @@ var commentSchema = new mongoose.Schema({
 
 var articleSchema = new mongoose.Schema({
 	id: Number, author: String, img: String, date: Date, text: String,
-	title: String, img: String, phone: String,
+	title: String, img: String,
 	comments: [commentSchema]
 })
 var profileSchema = new mongoose.Schema({
-	username: String, email: String, zipcode: String, dob: Date, headline: String,
-	avatar: String, following: [String],
+	username: String,
+	email: String,
+	zipcode: String,
+	dob: Date,
+	headline: String,
+	avatar: String,
+	following: [String],
 	displayName: String,
+	phone: String
 })
 var profile = mongoose.model('profile', profileSchema)
 exports.Profile = profile
