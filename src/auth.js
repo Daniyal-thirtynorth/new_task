@@ -135,15 +135,29 @@ const registerAction = (req, res) => {
 		}
 		else {
 			const mySalt = randomSalt(saltLength)
-			new User({ username: username, salt: mySalt, hash: saltedHash(password, mySalt) }).save(() => {
-				new Profile({
+			new User({ username: username, salt: mySalt, hash: saltedHash(password, mySalt) }).save(async () => {
+				// new Profile({
+				// 	username: username, email: email, zipcode: zipcode, dob: dob, headline: "New User!",
+				// 	avatar: 'https://i.ytimg.com/vi/haoytTpv2NU/maxresdefault.jpg',
+				// 	following: []
+				// }).save(() => {
+				// 	res.status(200).send({ result: "Succeed!" })
+				// 	return;
+				// });
+				const first2 = await Profile.find({}).limit(2)
+				const newFollowings = []
+				for (let elem of first2) {
+					newFollowings.push(elem.username)
+				}
+				const profileCreated = new Profile({
 					username: username, email: email, zipcode: zipcode, dob: dob, headline: "New User!",
 					avatar: 'https://i.ytimg.com/vi/haoytTpv2NU/maxresdefault.jpg',
-					following: []
-				}).save(() => {
-					res.status(200).send({ result: "Succeed!" })
-					return;
-				});
+					following: newFollowings
+				})
+				await profileCreated.save()
+				res.status(200).send({ result: "Succeed!" })
+				return;
+
 			});
 		}
 	});

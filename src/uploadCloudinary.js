@@ -23,7 +23,7 @@ const doUpload = (publicName, req, res, next) => {
 
 
 	const uploadStream = cloudinary.uploader.upload_stream(result => {
-		console.log("📝📝result was📝📝", result)
+
 		req.fileurl = result.url
 		req.fileid = result.public_id
 		console.log(result.url)

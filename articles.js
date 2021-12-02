@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser')
 let articleModel = require('./model.js').Article
+const uploadImage = require('./src/uploadCloudinary')
 let id = 5;
 const addArticle = async (req, res) => {
     // console.log('Payload received', req.body)
@@ -8,15 +9,17 @@ const addArticle = async (req, res) => {
     //     newarticle]
     try {
         const {
-            author,
             text,
+            title
         } = req.body
+        const author = req.username
         const allArticles = await articleModel.countDocuments({})
         const newarticle = new articleModel({
             id: allArticles + 1,
             date: Date.now(),
             author,
             text,
+            title
         })
         await newarticle.save()
         res.status(200).send(newarticle)
@@ -119,12 +122,30 @@ const putArticle = async (req, res) => {
 const defaultmsg = async (req, res) => {
     res.send("Hello pg39!")
 }
+const addImage = async (req, res) => {
+
+    try {
+        const articleId = req.params.id
+        const avatar = req.fileurl
+        console.log(req.fileurl)
+        await articleModel.findOneAndUpdate({ id: articleId }, {
+            img: avatar
+        })
+        return res.status(200).json({ result: "Image added", img: avatar })
+    } catch (err) {
+        return res.status(400).json({
+            result: err.message
+        })
+    }
+}
+
 module.exports = app => {
     app.use(bodyParser.json())
     app.get('/test3', defaultmsg)
     app.post('/article', addArticle)
     app.get('/articles/:id?', getArticle)
     app.put('/articles/:id?', putArticle)
+    app.post('/article/addPhoto/:id', uploadImage('avatar'), addImage)
 }
 
 // Get the port from the environment, i.e., Heroku sets it
