@@ -102,6 +102,18 @@ const putArticle = async (req, res) => {
     //             [...newarticles, { selectedarticles, text: req.body.text }]
     //     })
     // }
+    try {
+        const id = req.params.id
+        const { text } = req.body
+        const updated = await articleModel.findOneAndUpdate({ id: id }, {
+            text: text
+        })
+        return res.status(200).json({ updated })
+    } catch (err) {
+        return res.status(400).json({
+            result: err.message
+        })
+    }
 }
 const defaultmsg = async (req, res) => {
     res.send("Hello pg39!")
