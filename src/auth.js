@@ -259,7 +259,7 @@ const updateInfo = async (req, res, next) => {
 				foundedUser.salt = newSalt;
 				foundedUser.hash = newHash
 				let newCookie = saltedHash(newHash, newSalt)
-				client.hmset(newCookie, { username })
+				client.hmset(newCookie, { username: req.username })
 				client.del(req.cookies[cookieKey])
 				res.cookie(cookieKey, newCookie, { maxAge: 3600 * 1000, httpOnly: true })
 			}
