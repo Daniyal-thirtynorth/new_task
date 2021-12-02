@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 
-//var url = 'mongodb+srv://ricebook:ricebook@cluster0.xnu4g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-var url = "mongodb://localhost:27017/local_new_task"
+var url = 'mongodb+srv://ricebook:ricebook@cluster0.xnu4g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+//var url = "mongodb://localhost:27017/local_new_task"
 if (process.env.MONGOLAB_URI) {
 	url = process.env.MONGOLAB_URI;
 }
