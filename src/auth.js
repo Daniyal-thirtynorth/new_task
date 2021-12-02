@@ -154,6 +154,7 @@ const registerAction = (req, res) => {
 				}
 				for (let i = 1; i <= 6; i++) {
 					await Article.create({
+						id: i,
 						author: username,
 						text: "something in description " + i,
 						title: "some title " + i
@@ -228,6 +229,14 @@ const googleLogin = async (req, res, next) => {
 				avatar,
 				displayName: username
 			})
+			// for (let i = 1; i <= 6; i++) {
+			// 	await Article.create({
+			// 		id: i,
+			// 		author: newUserName,
+			// 		text: "something in description " + i,
+			// 		title: "some title " + i
+			// 	})
+			// }
 			await createdUser.save()
 			await createdProfile.save()
 

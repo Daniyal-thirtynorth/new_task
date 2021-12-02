@@ -104,8 +104,12 @@ const putArticle = async (req, res) => {
     // }
     try {
         const id = req.params.id
+        const author = req.username
+        if (!id) {
+            throw new Error("id is required to edit a post/article")
+        }
         const { text, title, img } = req.body
-        const updated = await articleModel.findOneAndUpdate({ id: id }, {
+        const updated = await articleModel.findOneAndUpdate({ id: id, author }, {
             text: text,
             title,
             img

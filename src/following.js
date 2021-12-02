@@ -8,7 +8,7 @@ const getFollowing = async (req, res) => {
 	//  })
 	try {
 		const user = req.params.user ? req.params.user : req.username
-		const founded = await profileModel.findOne({ user })
+		const founded = await profileModel.findOne({ username: user })
 		return res.status(200).json({
 			username: user,
 			following: founded.following
