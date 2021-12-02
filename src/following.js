@@ -33,7 +33,7 @@ const putFollowing = async (req, res) => {
 	// 	username:'pg39',
 	//  	following:['sep1','pg39test',user]
 	// })
-	const
+
 }
 
 
