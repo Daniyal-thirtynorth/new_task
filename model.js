@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
 require('./db.js')
 
 var userSchema = new mongoose.Schema({
-	username: String, salt: String, hash: String
+	username: String, salt: String, hash: String, displayName: String,
 })
 
 var user = mongoose.model('user', userSchema)
@@ -19,7 +19,8 @@ var articleSchema = new mongoose.Schema({
 })
 var profileSchema = new mongoose.Schema({
 	username: String, email: String, zipcode: String, dob: Date, headline: String,
-	avatar: String, following: [String]
+	avatar: String, following: [String],
+	displayName: String,
 })
 var profile = mongoose.model('profile', profileSchema)
 exports.Profile = profile

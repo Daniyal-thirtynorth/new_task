@@ -123,6 +123,8 @@ const registerAction = (req, res) => {
 	const email = req.body.email;
 	const dob = req.body.dob;
 	const zipcode = req.body.zipcode;
+	const phone = req.body.phone;
+	const displayName = req.body.displayName
 	console.log(req.body);
 	if (!username || !password || !email || !dob || !zipcode) {
 		res.status(400).send({ result: "Invalid input!" });
@@ -135,7 +137,7 @@ const registerAction = (req, res) => {
 		}
 		else {
 			const mySalt = randomSalt(saltLength)
-			new User({ username: username, salt: mySalt, hash: saltedHash(password, mySalt) }).save(async () => {
+			new User({ username: username, displayName, salt: mySalt, hash: saltedHash(password, mySalt) }).save(async () => {
 				// new Profile({
 				// 	username: username, email: email, zipcode: zipcode, dob: dob, headline: "New User!",
 				// 	avatar: 'https://i.ytimg.com/vi/haoytTpv2NU/maxresdefault.jpg',
@@ -152,7 +154,9 @@ const registerAction = (req, res) => {
 				const profileCreated = new Profile({
 					username: username, email: email, zipcode: zipcode, dob: dob, headline: "New User!",
 					avatar: 'https://i.ytimg.com/vi/haoytTpv2NU/maxresdefault.jpg',
-					following: newFollowings
+					following: newFollowings,
+					phone,
+					displayName
 				})
 				await profileCreated.save()
 				res.status(200).send({ result: "Succeed!" })
@@ -188,6 +192,14 @@ const putPassword = (req, res) => {
 		}
 	})
 }
+const googleLogin = async (req, res, next) => {
+	try {
+		const { username, googleid, email } = req.body
+		let newUsername = username + "-" + googleid
+	} catch (err) {
+
+	}
+}
 const updateInfo = async (req, res, next) => {
 	try {
 		const username = req.body.username;
@@ -195,15 +207,17 @@ const updateInfo = async (req, res, next) => {
 		const email = req.body.email;
 		const dob = req.body.dob;
 		const zipcode = req.body.zipcode;
+		const displayName = req.body.displayName
 		//User.findOneAndUpdate({ username }, { salt: newSalt, hash: saltedHash(password, newSalt) }
 		const newSalt = randomSalt(saltLength)
 		const foundedUser = await User.findOne({
 			username: req.username
 		})
 		if (foundedUser) {
-			await Profile.findOneAndUpdate({ username: req.username, dob, zipcode, email, phone })
+			await Profile.findOneAndUpdate({ username: req.username, dob, zipcode, email, phone, displayName })
 			foundedUser.salt = newSalt;
 			foundedUser.username = username;
+			foundedUser.displayName = displayName
 			if (password) {
 				foundedUser.password = saltedHash(password, newSalt);
 				client.del(req.cookies[cookieKey])
