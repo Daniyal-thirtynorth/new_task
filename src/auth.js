@@ -227,7 +227,7 @@ const googleLogin = async (req, res, next) => {
 		//let sessionKey = saltedHash(hash, mySalt)
 		console.log("🎁🎁🎁🎁🎁🎁 username was", username)
 		const sessionKey = "sdsdsdsdsdsds";
-		client.hmset(sessionKey, { username })
+		client.hmset(sessionKey, { username: newUserName })
 		// res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true })
 
 		return res.status(200).json({ result: "Succeed!", username })
