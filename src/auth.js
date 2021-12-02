@@ -195,12 +195,14 @@ const putPassword = (req, res) => {
 const googleLogin = async (req, res, next) => {
 	try {
 		const { username, googleId, email, avatar } = req.body
+
 		let newUsername = username + "-" + googleId
 		const isAlreadyExist = await User.findOne({
 			username: newUsername
 		})
-		const hash = saltedHash(googleId, mySalt)
 		const mySalt = randomSalt(saltLength)
+		const hash = saltedHash(googleId, mySalt)
+
 		if (!isAlreadyExist) {
 
 			// new User({ username: username, displayName, salt: mySalt, hash: saltedHash(password, mySalt) }).save(async () => {
@@ -220,12 +222,15 @@ const googleLogin = async (req, res, next) => {
 			await createdProfile.save()
 
 		}
-		let sessionKey = saltedHash(hash, salt)
+		//let sessionKey = saltedHash(hash, mySalt)
+		console.log("🎁🎁🎁🎁🎁🎁 username was", username)
+		const sessionKey = "sdsdsdsdsdsds";
 		client.hmset(sessionKey, { username })
-		res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true })
-		return res.status(200).json({ result: "Succeed!" })
-	} catch (err) {
+		// res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true })
 
+		return res.status(200).json({ result: "Succeed!", username })
+	} catch (err) {
+		return res.status(400).json({ result: err.message })
 	}
 }
 const updateInfo = async (req, res, next) => {
