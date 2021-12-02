@@ -161,7 +161,7 @@ const getAvatar = (req, res) => {
 		}
 		else {
 			if (doc) {
-				return res.status(200).json({ username: users, avatar: dpc.avatar })
+				return res.status(200).json({ username: users, avatar: doc.avatar })
 				//res.status(200).send({ avatars: [{ username: doc.username, avatar: doc.avatar }] }
 				//)
 			}
