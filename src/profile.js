@@ -16,28 +16,29 @@ var cookieParser = require('cookie-parser')
 const getHeadLines = (req, res) => {
 
 	const users = req.params.user ? req.params.user.split(',') : req.username;
-	Profile.find({ username: { $in: users } }).exec((err, items) => {
-		if (err) {
-			res.status(400).send({ error: err })
-		}
-		else {
-			if (items) {
-				res.status(200).send({
-					headlines: items.map((item) => {
-						return { username: item.username, headline: item.headline }
-					})
-				})
-			}
-			else {
-				res.status(404).send({ result: 'No matched items!' })
-			}
-		}
-	})
+	// Profile.find({ username: { $in: users } }).exec((err, items) => {
+	// 	if (err) {
+	// 		res.status(400).send({ error: err })
+	// 	}
+	// 	else {
+	// 		if (items) {
+	// 			res.status(200).send({
+	// 				headlines: items.map((item) => {
+	// 					return { username: item.username, headline: item.headline }
+	// 				})
+	// 			})
+	// 		}
+	// 		else {
+	// 			res.status(404).send({ result: 'No matched items!' })
+	// 		}
+	// 	}
+	// })
+
 }
 
 
 const putHeadLines = (req, res) => {
-	const username = defaultProfile.username
+	const username = req.username
 	const headline = req.body.headline
 	console.log(headline)
 	console.log(req.headers)
