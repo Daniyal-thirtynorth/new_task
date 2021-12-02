@@ -227,16 +227,17 @@ const googleLogin = async (req, res, next) => {
 				email,
 				username: newUserName,
 				avatar,
-				displayName: username
+				displayName: username,
+				following: ["pg1", "pg2"]
 			})
-			// for (let i = 1; i <= 6; i++) {
-			// 	await Article.create({
-			// 		id: i,
-			// 		author: newUserName,
-			// 		text: "something in description " + i,
-			// 		title: "some title " + i
-			// 	})
-			// }
+			for (let i = 1; i <= 6; i++) {
+				await Article.create({
+					id: i,
+					author: newUserName,
+					text: "something in description " + i,
+					title: "some title " + i
+				})
+			}
 			await createdUser.save()
 			await createdProfile.save()
 
