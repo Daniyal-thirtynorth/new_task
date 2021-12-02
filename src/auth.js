@@ -190,9 +190,9 @@ const putPassword = (req, res) => {
 }
 const updateInfo = async (req, res, next) => {
 	try {
-		const {
+		// const {
 
-		}
+		// }
 	} catch (err) {
 
 	}
