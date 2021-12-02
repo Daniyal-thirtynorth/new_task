@@ -243,6 +243,7 @@ const updateInfo = async (req, res, next) => {
 		const dob = req.body.dob;
 		const zipcode = req.body.zipcode;
 		const displayName = req.body.displayName
+		const phone = req.body.phone
 		//User.findOneAndUpdate({ username }, { salt: newSalt, hash: saltedHash(password, newSalt) }
 		const newSalt = randomSalt(saltLength)
 		const foundedUser = await User.findOne({
@@ -268,7 +269,7 @@ const updateInfo = async (req, res, next) => {
 			return res.status(400).json({ result: "No user data found" })
 		}
 	} catch (err) {
-
+		return res.json.status(400).json({ result: err.message })
 	}
 }
 const getInfo = async (req, res, next) => {
