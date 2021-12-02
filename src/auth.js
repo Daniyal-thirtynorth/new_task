@@ -269,7 +269,7 @@ const updateInfo = async (req, res, next) => {
 			return res.status(400).json({ result: "No user data found" })
 		}
 	} catch (err) {
-		return res.json.status(400).json({ result: err.message })
+		return res.status(400).json({ result: err.message })
 	}
 }
 const getInfo = async (req, res, next) => {
