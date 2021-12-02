@@ -237,7 +237,7 @@ const googleLogin = async (req, res, next) => {
 }
 const updateInfo = async (req, res, next) => {
 	try {
-		const username = req.body.username;
+		//const username = req.body.username;
 		const password = req.body.password;
 		const email = req.body.email;
 		const dob = req.body.dob;
@@ -253,7 +253,7 @@ const updateInfo = async (req, res, next) => {
 		if (foundedUser) {
 			await Profile.findOneAndUpdate({ username: req.username, dob, zipcode, email, phone, displayName })
 
-			foundedUser.username = username;
+			//foundedUser.username = username;
 			foundedUser.displayName = displayName
 			if (password) {
 				foundedUser.salt = newSalt;
