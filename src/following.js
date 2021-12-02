@@ -7,7 +7,7 @@ const getFollowing = async (req, res) => {
 	//  	following:['sep1','pg39test'] 
 	//  })
 	try {
-		const user = req.params.user
+		const user = req.params.user ? req.params.user : req.username
 		const founded = await profileModel.findOne({ user })
 		return res.status(200).json({
 			username: user,
