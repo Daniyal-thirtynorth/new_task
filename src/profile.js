@@ -200,7 +200,7 @@ const putAvatar = (req, res) => {
 		})
 	}
 }
-
+const updateInfo = async (req, res, next) => { }
 const putAvatar_stub = (req, res) => {
 	const username = req.username
 	const avatar = req.body

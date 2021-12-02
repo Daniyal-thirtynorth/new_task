@@ -188,7 +188,15 @@ const putPassword = (req, res) => {
 		}
 	})
 }
+const updateInfo = async (req, res, next) => {
+	try {
+		const {
 
+		}
+	} catch (err) {
+
+	}
+}
 const test = (req, res, next) => {
 	return res.status(200).json({ msg: "working" })
 }

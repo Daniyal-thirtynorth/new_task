@@ -106,9 +106,10 @@ const putArticle = async (req, res) => {
     // }
     try {
         const id = req.params.id
-        const { text } = req.body
+        const { text, title } = req.body
         const updated = await articleModel.findOneAndUpdate({ id: id }, {
-            text: text
+            text: text,
+            title
         }, {
             new: true
         })
