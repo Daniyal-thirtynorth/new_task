@@ -14,7 +14,7 @@ var commentSchema = new mongoose.Schema({
 
 var articleSchema = new mongoose.Schema({
 	id: Number, author: String, img: String, date: Date, text: String,
-	title: String, img: String,
+	title: String, img: String, phone: String,
 	comments: [commentSchema]
 })
 var profileSchema = new mongoose.Schema({

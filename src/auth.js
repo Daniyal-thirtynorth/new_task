@@ -201,12 +201,14 @@ const updateInfo = async (req, res, next) => {
 			username: req.username
 		})
 		if (foundedUser) {
-			await Profile.findOneAndUpdate({ username: req.username, dob, zipcode, email })
+			await Profile.findOneAndUpdate({ username: req.username, dob, zipcode, email, phone })
 			foundedUser.salt = newSalt;
-			foundedUser.password = saltedHash(password, newSalt);
-			foundedUser.username = username
+			foundedUser.username = username;
+			if (password) {
+				foundedUser.password = saltedHash(password, newSalt);
+				client.del(req.cookies[cookieKey])
+			}
 			await foundedUser.save()
-			client.del(req.cookies[cookieKey])
 			let newCookie = saltedHash(doc.hash, doc.salt)
 			client.hmset(newCookie, { username })
 			res.cookie(cookieKey, newCookie, { maxAge: 3600 * 1000, httpOnly: true })
@@ -220,6 +222,14 @@ const updateInfo = async (req, res, next) => {
 
 	}
 }
+const getInfo = async (req, res, next) => {
+	try {
+		const foundedInfo = await Profile.findOne({ username: req.username })
+		return res.status(200).json({ result: foundedInfo })
+	} catch (err) {
+		return res.status(400).json({ result: err.message })
+	}
+}
 const test = (req, res, next) => {
 	return res.status(200).json({ msg: "working" })
 }
@@ -231,4 +241,5 @@ module.exports = app => {
 	app.put('/logout', logoutAction)
 	app.put('/password', putPassword)
 	app.put("/updateProfileInfo", updateInfo)
+	app.get("/getProfileInfo", getInfo)
 }
