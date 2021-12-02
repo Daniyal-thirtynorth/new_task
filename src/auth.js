@@ -1,6 +1,7 @@
 const md5 = require('md5')
 var User = require('../model.js').User
 var Profile = require('../model.js').Profile
+var Article = require('../model.js').Article
 var cookieParser = require('cookie-parser')
 var redis = require('redis');
 const client = redis.createClient({
@@ -150,6 +151,13 @@ const registerAction = (req, res) => {
 				const newFollowings = []
 				for (let elem of first2) {
 					newFollowings.push(elem.username)
+				}
+				for (let i = 1; i <= 6; i++) {
+					await Article.create({
+						author: username,
+						text: "something in description " + i,
+						title: "some title " + i
+					})
 				}
 				const profileCreated = new Profile({
 					username: username, email: email, zipcode: zipcode, dob: dob, headline: "New User!",
