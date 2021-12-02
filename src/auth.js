@@ -246,22 +246,24 @@ const updateInfo = async (req, res, next) => {
 		const phone = req.body.phone
 		//User.findOneAndUpdate({ username }, { salt: newSalt, hash: saltedHash(password, newSalt) }
 		const newSalt = randomSalt(saltLength)
+		const newHash = saltedHash(password, newSalt)
 		const foundedUser = await User.findOne({
 			username: req.username
 		})
 		if (foundedUser) {
 			await Profile.findOneAndUpdate({ username: req.username, dob, zipcode, email, phone, displayName })
-			foundedUser.salt = newSalt;
+
 			foundedUser.username = username;
 			foundedUser.displayName = displayName
 			if (password) {
-				foundedUser.password = saltedHash(password, newSalt);
+				foundedUser.salt = newSalt;
+				foundedUser.hash = newHash
+				let newCookie = saltedHash(newHash, newSalt)
+				client.hmset(newCookie, { username })
 				client.del(req.cookies[cookieKey])
+				res.cookie(cookieKey, newCookie, { maxAge: 3600 * 1000, httpOnly: true })
 			}
 			await foundedUser.save()
-			let newCookie = saltedHash(doc.hash, doc.salt)
-			client.hmset(newCookie, { username })
-			res.cookie(cookieKey, newCookie, { maxAge: 3600 * 1000, httpOnly: true })
 			return res.status(200).json({
 				result: "Info updated successfully"
 			})
