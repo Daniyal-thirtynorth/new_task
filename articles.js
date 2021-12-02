@@ -10,7 +10,8 @@ const addArticle = async (req, res) => {
     try {
         const {
             text,
-            title
+            title,
+            img
         } = req.body
         const author = req.username
         const allArticles = await articleModel.countDocuments({})
@@ -19,7 +20,8 @@ const addArticle = async (req, res) => {
             date: Date.now(),
             author,
             text,
-            title
+            title,
+            img
         })
         await newarticle.save()
         res.status(200).send(newarticle)
@@ -126,12 +128,8 @@ const defaultmsg = async (req, res) => {
 const addImage = async (req, res) => {
 
     try {
-        const articleId = req.params.id
         const avatar = req.fileurl
         console.log(req.fileurl)
-        await articleModel.findOneAndUpdate({ id: articleId }, {
-            img: avatar
-        })
         return res.status(200).json({ result: "Image added", img: avatar })
     } catch (err) {
         return res.status(400).json({
@@ -146,7 +144,7 @@ module.exports = app => {
     app.post('/article', addArticle)
     app.get('/articles/:id?', getArticle)
     app.put('/articles/:id?', putArticle)
-    app.post('/article/addPhoto/:id', uploadImage('avatar'), addImage)
+    app.post('/article/addPhoto', uploadImage('avatar'), addImage)
 }
 
 // Get the port from the environment, i.e., Heroku sets it
