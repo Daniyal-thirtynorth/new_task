@@ -33,16 +33,43 @@ const putFollowing = async (req, res) => {
 	// 	username:'pg39',
 	//  	following:['sep1','pg39test',user]
 	// })
+	try {
+		const user = req.params.user
+		const focusedUser = req.username
+		const updated = await profileModel.findOneAndUpdate({ user: focusedUser }, {
+			$push: { following: user }
+
+		}, { new: true })
+		return res.status(200).json({
+			username: user,
+			following: updated.following
+		})
+	} catch (err) {
+		return res.status(400).json({
+			result: err.message
+		})
+	}
 
 }
 
 
 const deleteFollowing = async (req, res) => {
 	const user = req.params.user
+	try {
+		const user = req.params.user
+		const focusedUser = req.username
+		const updated = await profileModel.findOneAndUpdate({ user: focusedUser }, {
+			$pull: { following: user }
 
-	if (!user) {
-		res.status(400).send({ result: "Invalid input!" });
-		return;
+		}, { new: true })
+		return res.status(200).json({
+			username: user,
+			following: updated.following
+		})
+	} catch (err) {
+		return res.status(400).json({
+			result: err.message
+		})
 	}
 
 	res.status(200).send({

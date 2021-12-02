@@ -11,7 +11,6 @@ const addArticle = async (req, res) => {
             author,
             text,
         } = req.body
-
         const allArticles = await articleModel.countDocuments({})
         const newarticle = new articleModel({
             id: allArticles + 1,
