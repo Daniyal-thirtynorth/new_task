@@ -110,7 +110,7 @@ const putEmail = (req, res) => {
 const putDob = (req, res) => {
 	//const username = defaultProfile.username
 	const username = req.username
-	const email = req.body.email
+	const email = req.body.dob
 	if (!email) {
 		res.status(400).send("empty")
 	}
