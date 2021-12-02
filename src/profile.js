@@ -84,7 +84,7 @@ const getEmail = (req, res) => {
 
 const putEmail = (req, res) => {
 	//const username = defaultProfile.username
-	const username = req.params.user
+	const username = req.username
 	const email = req.body.email
 	if (!email) {
 		res.status(400).send("empty")
@@ -106,7 +106,29 @@ const putEmail = (req, res) => {
 	}
 }
 
-
+const putDob = (req, res) => {
+	//const username = defaultProfile.username
+	const username = req.username
+	const email = req.body.email
+	if (!email) {
+		res.status(400).send("empty")
+	}
+	else {
+		Profile.findOneAndUpdate({ username }, { dob }, { new: true, upsert: true }, (error, doc) => {
+			if (error) {
+				res.status(400).send({ error: error })
+			}
+			else {
+				if (doc) {
+					res.status(200).send({ username, email: doc.email })
+				}
+				else {
+					res.status(404).send({ result: 'Did not found headline!' })
+				}
+			}
+		})
+	}
+}
 const getZipcode = (req, res) => {
 	const users = req.params.user ? req.params.user.split(',') : req.username;
 	console.log('zipcode session:' + users)
@@ -242,4 +264,5 @@ module.exports = app => {
 	app.get('/avatar/:user?', getAvatar)
 	app.put('/avatar', uploadImage('avatar'), putAvatar)
 	app.get('/dob', getDob)
+	app.put("/dob", putDob)
 }
