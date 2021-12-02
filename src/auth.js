@@ -190,9 +190,32 @@ const putPassword = (req, res) => {
 }
 const updateInfo = async (req, res, next) => {
 	try {
-		// const {
-
-		// }
+		const username = req.body.username;
+		const password = req.body.password;
+		const email = req.body.email;
+		const dob = req.body.dob;
+		const zipcode = req.body.zipcode;
+		//User.findOneAndUpdate({ username }, { salt: newSalt, hash: saltedHash(password, newSalt) }
+		const newSalt = randomSalt(saltLength)
+		const foundedUser = await User.findOne({
+			username: req.username
+		})
+		if (foundedUser) {
+			await Profile.findOneAndUpdate({ username: req.username, dob, zipcode, email })
+			foundedUser.salt = newSalt;
+			foundedUser.password = saltedHash(password, newSalt);
+			foundedUser.username = username
+			await foundedUser.save()
+			client.del(req.cookies[cookieKey])
+			let newCookie = saltedHash(doc.hash, doc.salt)
+			client.hmset(newCookie, { username })
+			res.cookie(cookieKey, newCookie, { maxAge: 3600 * 1000, httpOnly: true })
+			return res.status(200).json({
+				result: "Info updated successfully"
+			})
+		} else {
+			return res.status(400).json({ result: "No user data found" })
+		}
 	} catch (err) {
 
 	}
@@ -207,4 +230,5 @@ module.exports = app => {
 	app.use(isLoggedIn)
 	app.put('/logout', logoutAction)
 	app.put('/password', putPassword)
+	app.put("/updateProfileInfo", updateInfo)
 }
