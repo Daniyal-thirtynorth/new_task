@@ -129,7 +129,7 @@ const getZipcode = (req, res) => {
 
 
 const putZipcode = (req, res) => {
-	const username = defaultProfile.username
+	const username = req.username
 	const zipcode = req.body.zipcode
 	if (!zipcode) {
 		res.status(400).send("empty")
@@ -161,9 +161,9 @@ const getAvatar = (req, res) => {
 		}
 		else {
 			if (doc) {
-
-				res.status(200).send({ avatars: [{ username: doc.username, avatar: doc.avatar }] }
-				)
+				return res.status(200).json({ username: users, avatar: dpc.avatar })
+				//res.status(200).send({ avatars: [{ username: doc.username, avatar: doc.avatar }] }
+				//)
 			}
 			else {
 				console.log(users)
