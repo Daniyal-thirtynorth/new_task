@@ -43,7 +43,7 @@ function isLoggedIn(req, res, next) {
 
 	let first_login = (req.url == '/login') || (req.url == '/register') || (req.url == '/googleLogin')
 	if (req.method == 'OPTIONS') {
-		res.sendStatus(200)
+		res.status(200).json()
 		console.log(req.url)
 		return
 	}
