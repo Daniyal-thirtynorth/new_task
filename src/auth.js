@@ -227,15 +227,15 @@ const googleLogin = async (req, res, next) => {
 			const foundedHash = isAlreadyExist.hash;
 			const foundedSalt = isAlreadyExist.salt;
 			let sessionKeyPrevious = saltedHash(foundedHash, foundedSalt)
-			console.log("🎁🎁🎁🎁🎁🎁 username was", username)
 			client.hmset(sessionKeyPrevious, { username: isAlreadyExist.username })
+			res.cookie(cookieKey, sessionKeyPrevious, { maxAge: 3600 * 1000, httpOnly: true })
 			return res.status(200).json({ result: "Succeed!", username: isAlreadyExist.username })
 		}
 		let sessionKey = saltedHash(hash, mySalt)
 		console.log("🎁🎁🎁🎁🎁🎁 username was", username)
 		client.hmset(sessionKey, { username: newUserName })
-		// res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true })
-
+		res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true })
+		return res.status(200).json({ result: "Succeed!", username: username })
 
 	} catch (err) {
 		return res.status(400).json({ result: err.message })
