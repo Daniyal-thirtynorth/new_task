@@ -110,7 +110,7 @@ const putArticle = async (req, res) => {
         }, {
             new: true
         })
-        return res.status(200).json({ articles })
+        return res.status(200).json({ articles: updated })
     } catch (err) {
         return res.status(400).json({
             result: err.message
