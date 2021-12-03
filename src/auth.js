@@ -58,7 +58,7 @@ function isLoggedIn(req, res, next) {
 		// console.log(req.cookies)
 		const turl = req.url;
 		const tcookie = req.cookies
-		console.log(`🎨🎨🎨on url ${turl} cookie was ${tcookie}🎨🎨🎨`)
+		console.log("🎨🎨🎨on url", req.url, " cookie was ", req.cookie, " 🎨🎨🎨")
 		let sid = req.cookies[cookieKey]
 
 		if (first_login) {
