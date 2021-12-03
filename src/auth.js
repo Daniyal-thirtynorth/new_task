@@ -108,7 +108,7 @@ const loginAction = (req, res) => {
 				client.hmset(sessionKey, { username })
 				//console.log(username)
 				//secure: true, sameSite: false
-				res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: false, secure: true, sameSite: false })
+				res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true, secure: true, sameSite: false })
 				//res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: false })
 				res.status(200).send({ username: username, result: 'success' });
 				return;
