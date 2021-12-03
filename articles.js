@@ -153,7 +153,7 @@ const addComment = async (req, res, next) => {
 }
 const getComments = async (req, res, next) => {
     try {
-        const { articleMongoId } = req.body;
+        const { articleMongoId } = req.params;
         if (!articleMongoId) {
             throw new Error("Article mongo db id is required")
         }
@@ -185,7 +185,7 @@ module.exports = app => {
     app.use(bodyParser.json())
     app.get('/test3', defaultmsg)
     app.post('/article', addArticle)
-    app.get("/article/getComments", getComments)
+    app.get("/article/getComments/:articleMongoId", getComments)
     app.get('/articles/:id?', getArticle)
     app.put('/articles/:id?', putArticle)
     app.post('/article/addPhoto', uploadImage('avatar'), addImage)
