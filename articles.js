@@ -151,6 +151,23 @@ const addComment = async (req, res, next) => {
         return res.status(400).json({ result: err.message })
     }
 }
+const getComments = async (req, res, next) => {
+    try {
+        const { articleMongoId } = req.body;
+        if (!articleMongoId) {
+            throw new Error("Article mongo db id is required")
+        }
+        const foundedArticle = await articleModel.findOne({
+            _id: articleMongoId
+        })
+        const articleComments = foundedArticle.comments
+        await foundedArticle.save()
+        return res.status(200).json({ result: articleComments })
+
+    } catch (err) {
+        return res.status(400).json({ result: err.message })
+    }
+}
 const addImage = async (req, res) => {
 
     try {
@@ -168,6 +185,7 @@ module.exports = app => {
     app.use(bodyParser.json())
     app.get('/test3', defaultmsg)
     app.post('/article', addArticle)
+    app.get("/article/getComments", getComments)
     app.get('/articles/:id?', getArticle)
     app.put('/articles/:id?', putArticle)
     app.post('/article/addPhoto', uploadImage('avatar'), addImage)
