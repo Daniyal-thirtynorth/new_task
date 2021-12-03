@@ -75,12 +75,13 @@ const putHeadLines = async (req, res) => {
 	// }
 	try {
 		const headline = req.body.headline
-		const founded = await Profile.findOne({ username: users })
+		const focusedUser = req.username
+		const founded = await Profile.findOne({ username: focusedUser })
 		if (!founded) {
-			throw new Error(`no profile found against username ${users}`)
+			throw new Error(`no profile found against username ${focusedUser}`)
 		}
-		console.log(`📝📝updating headline for ${users} with ${headline}📝📝`)
-		await Profile.findByIdAndUpdate({
+		console.log(`📝📝updating headline for ${focusedUser} with ${headline}📝📝`)
+		await Profile.findOneAndUpdate({
 			username: req.username
 		},
 			{
