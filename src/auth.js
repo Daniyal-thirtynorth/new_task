@@ -109,7 +109,7 @@ const loginAction = (req, res) => {
 				//console.log(username)
 				//secure: true, sameSite: false
 				//res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true, secure: true, sameSite: false, domain: "https://main.d7wlf7mkopkl3.amplifyapp.com/" })
-				res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true, sameSite: "Lax" })
+				res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true, sameSite: "None" })
 				res.status(200).send({ username: username, result: 'success' });
 				return;
 			}
