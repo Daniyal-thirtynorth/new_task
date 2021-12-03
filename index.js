@@ -1,13 +1,13 @@
 
 const express = require('express')
-const cors = require("cors")
+//const cors = require("cors")
 const bodyParser = require('body-parser')
 const app = express()
-app.use(cors({
-	origin: "*",
-	credentials: true,
-	exposedHeaders: ["set-cookie"],
-}))
+// app.use(cors({
+// 	origin: "*",
+// 	credentials: true,
+// 	exposedHeaders: ["set-cookie"],
+// }))
 app.use(bodyParser.json())
 app.use(bodyParser.text())
 app.use(function (req, res, next) {
