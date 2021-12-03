@@ -147,23 +147,10 @@ const registerAction = (req, res) => {
 				// 	res.status(200).send({ result: "Succeed!" })
 				// 	return;
 				// });
-				const first2 = await Profile.find({}).limit(2)
-				const newFollowings = []
-				for (let elem of first2) {
-					newFollowings.push(elem.username)
-				}
-				for (let i = 1; i <= 6; i++) {
-					await Article.create({
-						id: i,
-						author: username,
-						text: "something in description " + i,
-						title: "some title " + i
-					})
-				}
 				const profileCreated = new Profile({
 					username: username, email: email, zipcode: zipcode, dob: dob, headline: "New User!",
 					avatar: 'https://i.ytimg.com/vi/haoytTpv2NU/maxresdefault.jpg',
-					following: newFollowings,
+					following: ["pg1", "pg2"],
 					phone,
 					displayName
 				})
