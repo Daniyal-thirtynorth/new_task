@@ -13,8 +13,8 @@ client.on("error", function (err) {
 	console.log("Error " + err);
 });
 const saltLength = 20;
-//const cookieKey = 'sid';
-const cookieKey = 'sidii52';
+const cookieKey = 'sid';
+//const cookieKey = 'sidii52';
 const randomSalt = (len) => {
 	const charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	var randomString = '';

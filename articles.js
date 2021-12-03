@@ -138,13 +138,12 @@ const addComment = async (req, res, next) => {
             date: Date.now(),
             text,
         }
-        const foundedArticle = await articleModel.findOne({
+        await articleModel.findOneAndUpdate({
             _id: articleMongoId
+        }, {
+            $push: { comments: commentObj }
         })
-        const articleComments = foundedArticle.comments
-        articleComments.unshift(commentObj)
-        foundedArticle.comments = articleComments;
-        await foundedArticle.save()
+
         return res.status(200).json({ result: commentObj })
 
     } catch (err) {
