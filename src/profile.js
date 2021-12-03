@@ -13,51 +13,86 @@ const bodyParser = require('body-parser')
 var Article = require('../model.js').Article
 var cookieParser = require('cookie-parser')
 
-const getHeadLines = (req, res) => {
+const getHeadLines = async (req, res) => {
 
 	const users = req.params.user ? req.params.user.split(',') : req.username;
-	Profile.find({ username: { $in: users } }).exec((err, items) => {
-		if (err) {
-			res.status(400).send({ error: err })
+	// Profile.find({ username: { $in: users } }).exec((err, items) => {
+	// 	if (err) {
+	// 		res.status(400).send({ error: err })
+	// 	}
+	// 	else {
+	// 		if (items) {
+	// 			res.status(200).send({
+	// 				headlines: items.map((item) => {
+	// 					return { username: item.username, headline: item.headline }
+	// 				})
+	// 			})
+	// 		}
+	// 		else {
+	// 			res.status(404).send({ result: 'No matched items!' })
+	// 		}
+	// 	}
+	// })
+	try {
+		const founded = await Profile.findOne({ username: users })
+		if (!founded) {
+			throw new Error(`no profile found against username ${users}`)
 		}
-		else {
-			if (items) {
-				res.status(200).send({
-					headlines: items.map((item) => {
-						return { username: item.username, headline: item.headline }
-					})
-				})
-			}
-			else {
-				res.status(404).send({ result: 'No matched items!' })
-			}
-		}
-	})
-
+		console.log(`📝📝getting headline for ${users} got ${founded}📝📝`)
+		return res.status(200).json({
+			result: founded.headline
+		})
+	} catch (err) {
+		return res.status(400).json({
+			result: err.message
+		})
+	}
 }
 
 
-const putHeadLines = (req, res) => {
-	const username = req.username
-	const headline = req.body.headline
-	console.log(headline)
-	console.log(req.headers)
-	if (!headline) {
-		res.status(400).send("empty")
-	}
-	else {
-		Profile.findOneAndUpdate({ username }, { headline }, { new: true, upsert: true }, (error, doc) => {
-			if (error) {
-				res.status(400).send({ error: error })
+const putHeadLines = async (req, res) => {
+	// const username = req.username
+	// const headline = req.body.headline
+	// console.log(headline)
+	// console.log(req.headers)
+	// if (!headline) {
+	// 	res.status(400).send("empty")
+	// }
+	// else {
+	// 	Profile.findOneAndUpdate({ username }, { headline }, { new: true, upsert: true }, (error, doc) => {
+	// 		if (error) {
+	// 			res.status(400).send({ error: error })
+	// 		}
+	// 		else {
+	// 			if (doc) {
+	// 				res.status(200).send({ username, headline: doc.headline })
+	// 			}
+	// 			else {
+	// 				res.status(404).send({ result: 'Did not found headline!' })
+	// 			}
+	// 		}
+	// 	})
+	// }
+	try {
+		const headline = req.body.headline
+		const founded = await Profile.findOne({ username: users })
+		if (!founded) {
+			throw new Error(`no profile found against username ${users}`)
+		}
+		console.log(`📝📝updating headline for ${users} with ${headline}📝📝`)
+		await Profile.findByIdAndUpdate({
+			username: req.username
+		},
+			{
+				headline: headline
 			}
-			else {
-				if (doc) {
-					res.status(200).send({ username, headline: doc.headline })
-				}
-				else {
-					res.status(404).send({ result: 'Did not found headline!' })
-				}
-			}
+		)
+		return res.status(200).json({
+			result: headline
+		})
+	} catch (err) {
+		return res.status(400).json({
+			result: err.message
 		})
 	}
 }

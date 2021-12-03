@@ -13,7 +13,11 @@ var commentSchema = new mongoose.Schema({
 })
 
 var articleSchema = new mongoose.Schema({
-	id: Number, author: String, img: String, date: Date, text: String,
+	id: Number,
+	author: String,
+	img: String,
+	date: { type: Date, default: Date.now },
+	text: String,
 	title: String, img: String,
 	comments: [commentSchema]
 })

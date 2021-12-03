@@ -50,7 +50,7 @@ const getArticle = async (req, res) => {
     // }
     try {
         const id = req.username
-        const articles = await articleModel.find({ author: id })
+        const articles = await articleModel.find({ author: id }).sort({ date: -1 })
         return res.status(200).json({ articles })
     } catch (err) {
         return res.status(400).json({

@@ -9,6 +9,7 @@ const getFollowing = async (req, res) => {
 	try {
 		const user = req.params.user ? req.params.user : req.username
 		const founded = await profileModel.findOne({ username: user })
+		console.log("📝📝Returning followers for user was📝📝==>", user, "founded object==>", founded)
 		return res.status(200).json({
 			username: user,
 			following: founded.following
@@ -36,6 +37,7 @@ const putFollowing = async (req, res) => {
 	try {
 		const user = req.params.user
 		const focusedUser = req.username
+		console.log(`📝📝user ${focusedUser} requested to add ${req.params.user}📝📝`)
 		const updated = await profileModel.findOneAndUpdate({ user: focusedUser }, {
 			$push: { following: user }
 
@@ -58,12 +60,13 @@ const deleteFollowing = async (req, res) => {
 	try {
 		const user = req.params.user
 		const focusedUser = req.username
+		console.log(`📝📝user ${focusedUser} requested to remove ${req.params.user}📝📝`)
 		const updated = await profileModel.findOneAndUpdate({ user: focusedUser }, {
 			$pull: { following: user }
 
 		}, { new: true })
 		return res.status(200).json({
-			username: user,
+			username: focusedUser,
 			following: updated.following
 		})
 	} catch (err) {
