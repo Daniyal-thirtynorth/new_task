@@ -54,8 +54,9 @@ function isLoggedIn(req, res, next) {
 		return
 	}
 	else {
-		console.log(req.url)
-		console.log(req.cookies)
+		// console.log(req.url)
+		// console.log(req.cookies)
+		console.log(`🎨🎨🎨on url ${req.url} cookie was ${req.cookies}🎨🎨🎨`)
 		let sid = req.cookies[cookieKey]
 
 		if (first_login) {
@@ -303,10 +304,12 @@ const getInfo = async (req, res, next) => {
 	}
 }
 const test = (req, res, next) => {
+	console.log(`🎪🎪cookie was ${req.cookies}🎪🎪`)
 	return res.status(200).json({ msg: "working" })
 }
 module.exports = app => {
 	app.use(cookieParser())
+	app.post("/testDebug", test)
 	app.post('/login', loginAction)
 	app.post('/register', registerAction)
 	app.post("/googleLogin", googleLogin)
