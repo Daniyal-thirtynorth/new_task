@@ -38,7 +38,18 @@ const putFollowing = async (req, res) => {
 		const user = req.params.user
 		const focusedUser = req.username
 		console.log(`📝📝user ${focusedUser} requested to add ${req.params.user}📝📝`)
-		const updated = await profileModel.findOneAndUpdate({ user: focusedUser }, {
+		const foundedProfile = await profileModel.findOne({
+			username: focusedUser
+		})
+		if (!foundedProfile) {
+			throw new Error("No proflie found with username ", focusedUser)
+		}
+		if (foundedProfile.following.includes(user)) {
+			throw new Error(`You already followed ${user}`)
+		} else {
+			console.log(`${foundedProfile.following} not includes ${user} adding a follower`)
+		}
+		const updated = await profileModel.findOneAndUpdate({ username: focusedUser }, {
 			$push: { following: user }
 
 		}, { new: true })
@@ -61,7 +72,7 @@ const deleteFollowing = async (req, res) => {
 		const user = req.params.user
 		const focusedUser = req.username
 		console.log(`📝📝user ${focusedUser} requested to remove ${req.params.user}📝📝`)
-		const updated = await profileModel.findOneAndUpdate({ user: focusedUser }, {
+		const updated = await profileModel.findOneAndUpdate({ username: focusedUser }, {
 			$pull: { following: user }
 
 		}, { new: true })
