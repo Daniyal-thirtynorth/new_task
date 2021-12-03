@@ -154,6 +154,14 @@ const registerAction = (req, res) => {
 					phone,
 					displayName
 				})
+				for (let i = 1; i <= 6; i++) {
+					await Article.create({
+						id: i,
+						author: username,
+						text: "something in description " + i,
+						title: "some title " + i
+					})
+				}
 				await profileCreated.save()
 				res.status(200).send({ result: "Succeed!" })
 				return;
@@ -263,7 +271,7 @@ const updateInfo = async (req, res, next) => {
 			username: req.username
 		})
 		if (foundedUser) {
-			await Profile.findOneAndUpdate({ username: req.username, dob, zipcode, email, phone, displayName })
+			await Profile.findOneAndUpdate({ username: req.username }, { dob, zipcode, email, phone, displayName })
 
 			//foundedUser.username = username;
 			foundedUser.displayName = displayName
