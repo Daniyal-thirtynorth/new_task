@@ -309,7 +309,7 @@ const test = (req, res, next) => {
 }
 module.exports = app => {
 	app.use(cookieParser())
-	app.post("/testDebug", test)
+	app.get("/testDebug", test)
 	app.post('/login', loginAction)
 	app.post('/register', registerAction)
 	app.post("/googleLogin", googleLogin)
