@@ -49,7 +49,7 @@ function isLoggedIn(req, res, next) {
 		return
 	}
 	else if (!req.cookies && (!first_login)) {
-		console.log('cookie missing')
+		console.log('💥💥💥cookie missing on url 💥💥💥', req.url)
 		res.status(401).send({ result: 'Not authorized! No  cookie!' })
 		return
 	}

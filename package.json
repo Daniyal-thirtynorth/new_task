@@ -22,7 +22,7 @@
     "request": "^2.88.2"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "npm i && node index.js",
     "watch": "nodemon index.js",
     "test": "node_modules/.bin/jasmine-node spec",
     "test:watch": "npm run test -- -w"
