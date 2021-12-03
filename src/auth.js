@@ -13,8 +13,8 @@ client.on("error", function (err) {
 	console.log("Error " + err);
 });
 const saltLength = 20;
-const cookieKey = 'sid';
-
+//const cookieKey = 'sid';
+const cookieKey = 'sidii52';
 const randomSalt = (len) => {
 	const charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	var randomString = '';
@@ -108,8 +108,8 @@ const loginAction = (req, res) => {
 				client.hmset(sessionKey, { username })
 				//console.log(username)
 				//secure: true, sameSite: false
-				res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true, secure: true, sameSite: false, domain: "https://main.d7wlf7mkopkl3.amplifyapp.com/" })
-				//res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: false })
+				//res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: true, secure: true, sameSite: false, domain: "https://main.d7wlf7mkopkl3.amplifyapp.com/" })
+				res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: false })
 				res.status(200).send({ username: username, result: 'success' });
 				return;
 			}
