@@ -26,7 +26,10 @@ var profileSchema = new mongoose.Schema({
 	email: String,
 	zipcode: String,
 	dob: Date,
-	headline: String,
+	headline: {
+		type: String,
+		default: "The default headline"
+	},
 	avatar: String,
 	following: [String],
 	displayName: String,
