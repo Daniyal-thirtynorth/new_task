@@ -126,6 +126,31 @@ const putArticle = async (req, res) => {
 const defaultmsg = async (req, res) => {
     res.send("Hello pg39!")
 }
+const addComment = async (req, res, next) => {
+    try {
+        const { text, articleMongoId } = req.body;
+        if (!articleMongoId || !text) {
+            throw new Error("Article mongo db id and text are both required")
+        }
+        const focusedUser = req.username
+        const commentObj = {
+            author: focusedUser,
+            date: Date.now(),
+            text,
+        }
+        const foundedArticle = await articleModel.findOne({
+            _id: articleMongoId
+        })
+        const articleComments = foundedArticle.comments
+        articleComments.unshift(commentObj)
+        foundedArticle.comments = articleComments;
+        await foundedArticle.save()
+        return res.status(200).json({ result: commentObj })
+
+    } catch (err) {
+        return res.status(400).json({ result: err.message })
+    }
+}
 const addImage = async (req, res) => {
 
     try {
@@ -146,6 +171,7 @@ module.exports = app => {
     app.get('/articles/:id?', getArticle)
     app.put('/articles/:id?', putArticle)
     app.post('/article/addPhoto', uploadImage('avatar'), addImage)
+    app.put("/article/addComment", addComment)
 }
 
 // Get the port from the environment, i.e., Heroku sets it
@@ -156,7 +182,7 @@ var articles = [{
     id: 1,
     author: "pg39",
     text: "This is my first article",
-    comments: [{ author: 'pg39test', commendId: 1212, date: '2015-10-27T19:52:25.960Z', text: 'The quick, brown fox jumps over a lazy dog. DJs flock by when MTV ax quiz prog. Junk MTV quiz graced by fox whelps. Bawds jog, flick quartz, vex nymphs. Waltz, bad nymph, for quick jigs vex!' }],
+    comments: [{ author: 'pg39test', commendId: 1212, date: '2015-10-27T19:52:25.960Z', text: '' }],
     date: '2017-04-04T15:09:04Z',
     img: 'http://az616578.vo.msecnd.net/files/2017/02/10/636223537065395516-1597768472_snow%204.jpg'
 },
