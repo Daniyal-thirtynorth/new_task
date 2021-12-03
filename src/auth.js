@@ -107,7 +107,9 @@ const loginAction = (req, res) => {
 				let sessionKey = saltedHash(hash, salt)
 				client.hmset(sessionKey, { username })
 				//console.log(username)
-				res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: false })
+				//secure: true, sameSite: false
+				res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: false, secure: true, sameSite: false })
+				//res.cookie(cookieKey, sessionKey, { maxAge: 3600 * 1000, httpOnly: false })
 				res.status(200).send({ username: username, result: 'success' });
 				return;
 			}
