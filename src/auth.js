@@ -242,6 +242,7 @@ const googleLogin = async (req, res, next) => {
 			await createdProfile.save()
 
 		} else {
+			console.log("is alradyExist is", isAlreadyExist)
 			const foundedHash = isAlreadyExist.hash;
 			const foundedSalt = isAlreadyExist.salt;
 			let sessionKeyPrevious = saltedHash(foundedHash, foundedSalt)
